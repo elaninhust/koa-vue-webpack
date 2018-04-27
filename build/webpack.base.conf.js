@@ -13,9 +13,9 @@ module.exports = {
 		app: './client/main.js'
 	},
 	output: {
-    path: resolve('dist'),
+    path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: '/'
+    publicPath: config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -35,7 +35,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src')]
+        include: [resolve('client'), resolve('test')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

@@ -1,43 +1,22 @@
 const path = require('path')
 const Koa = require('koa')
-const koaStatic = require('koa-static')
-const webpack = require('webpack')
-const convert = require('koa-convert')
-const webpackConfig = require('../build/webpack.dev.conf.js')
-const devMiddleware = require('koa-webpack-dev-middleware')
-const hotMiddleware = require('koa-webpack-hot-middleware')
-const env = process.env.NODE_ENV === 'development'
-const PORT = process.env.PORT || 2019
+const bodyParser = require('koa-bodyparser') // bodyParser
+const static = require('koa-static') //静态文件托管
+const convert = require('koa-convert') //中间件转换
+const logger = require('koa-logger') //请求日志打印
+const onerror = require('koa-onerror') //错误收集
 const app = new Koa()
-const compiler = webpack(webpackConfig)
+const isDev = process.env.NODE_ENV === 'development'
 
+onerror(app)
+app.use(logger())
+app.use(bodyParser())
+app.use(static(path.resolve(__dirname, '../dist/')))
 
-if(env){
-	app.use(convert(devMiddleware(compiler, {
-		publicPath: webpackConfig.output.publicPath
-	})))
-	app.use(convert(hotMiddleware(compiler, {
-		log: () => {}
-	})))
+if(isDev){
+	require('../build/dev-server.js')(app)
+}else{
+	app.listen(PORT,() => {
+		console.log(`server start at ${PORT}`)
+	})
 }
-
-app.use(async function(ctx, next){
-	const filename = path.join(__dirname, '../', 'index.html')
-
-  // complier.outputFileSystem 可以获得内存中的编译结果
-  let res = await new Promise(function(resolve, reject){
-  	compiler.outputFileSystem.readFile(filename, (err, result) => {
-	    if (err) {
-	      return reject(err)
-	    }
-	    resolve(result)
-	  })
-  })
-  ctx.status = 200
-  ctx.url = '/index'
-  ctx.type = 'text/html'
-  ctx.body = res
-})
-
-app.listen(PORT)
-console.log(`start at localhost:${PORT}`)

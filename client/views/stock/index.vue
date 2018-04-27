@@ -9,7 +9,7 @@
 			}
 		},
 		mounted(){
-			console.log('mfjids')
+			
 		}
 	}
 </script>
