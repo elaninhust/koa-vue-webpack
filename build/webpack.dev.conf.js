@@ -1,13 +1,15 @@
 const webpack = require('webpack')
+const merge = require('webpack-merge')
 const htmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
+const baseWebpackConfig = require('./webpack.base.conf.js')
 const env = process.env.NODE_ENV
 
 console.log(path.join(__dirname,'../src'))
 
-const devWebpackConfig = {
+const devWebpackConfig = merge(baseWebpackConfig, {
 	entry:{
-		app: ["webpack-hot-middleware/client",path.join(__dirname,'../src/js/index.js')]
+		app: ["webpack-hot-middleware/client",path.join(__dirname,'../client/main.js')]
 	},
 	output:{
 		publicPath: '/',
@@ -20,10 +22,10 @@ const devWebpackConfig = {
     }),
 		new htmlWebpackPlugin({
 			filename: 'index.html',
-			template: path.join(__dirname,'../src/index.html'),
+			template: path.join(__dirname,'../index.html'),
 			inject: true
 		})
 	]
-}
+})
 
 module.exports = devWebpackConfig
