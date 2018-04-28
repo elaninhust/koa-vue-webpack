@@ -8,9 +8,8 @@ function start(app){
 	const devMiddleware = require('koa-webpack-dev-middleware')
 	const hotMiddleware = require('koa-webpack-hot-middleware')
 	const config = require('../config/index.js')
-
 	const env = process.env.NODE_ENV === 'development'
-	const PORT = process.env.PORT || config.dev.port
+	const PORT = config.dev.port
 	const autoOpenBrowser = !!config.dev.autoOpenBrowser
 	const compiler = webpack(webpackConfig)
 
@@ -41,7 +40,10 @@ function start(app){
 	// 	_resolve()
 	// })
 
-	app.listen(PORT)
+	console.log('> starting dev server...')
+	app.listen(PORT, () => {
+		console.log(`> listening at ${url}`)
+	})
 }
 
 module.exports = start
